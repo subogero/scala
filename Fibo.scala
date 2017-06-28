@@ -1,10 +1,9 @@
 object Fibo {
-    def timed(f: => Any): Any = {
+    def timed(f: => Any): (Any, Double) = {
         val t0 = System.nanoTime
         val ret = f
         val t = System.nanoTime
-        println(((t - t0) / 1000000.0).toString + " [ms]")
-        ret
+        (ret, (t - t0) / 1000000.0)
     }
     def fib1(n: Int): BigInt =
         if (n == 0)
@@ -23,10 +22,11 @@ object Fibo {
         fibhelp(0, 1, n)
     }
     def main(argv: Array[String]) = {
-        timed(println("Hello World!"))
-        println("Fibonacci recursive");
-        0 to 20 foreach(i => println(i, timed(fib1(i))))
-        println("Fibonacci tail recursive");
-        0 to 20 foreach(i => println(i, timed(fib2(i))))
+        println(timed(println("Hello World!")))
+        0 to 20 map( i => (
+            i,
+            timed(fib1(i)),
+            timed(fib2(i))
+        ) ) foreach(println(_))
     }
 }
